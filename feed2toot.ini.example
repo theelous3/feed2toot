@@ -1,0 +1,24 @@
+[mastodon]
+instance_url = https://g2s.theelous3.net
+user_credentials   = /home/theelous3/feed2toot/creds/feed2toot_usercred.secret
+client_credentials = /home/theelous3/feed2toot/creds/feed2toot_clientcred.secret
+toot_visibility = public
+
+[cache]
+cachefile   = /home/theelous3/feed2toot/state/feed2toot.db
+cache_limit = 10000
+
+[lock]
+lock_file    = /home/theelous3/feed2toot/state/feed2toot.lock
+lock_timeout = 3600
+
+[rss]
+uri  = https://record.theelous3.net/index.xml
+toot = {title} {link}
+; toot_max_len = 500
+
+[hashtaglist]
+; several_words_hashtags_list = /home/youruser/feed2toot/hashtags.txt
+
+[feedparser]
+accept_bozo_exceptions = true

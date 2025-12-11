@@ -2,7 +2,7 @@
 """Get values of the configuration file"""
 
 # standard library imports
-from configparser import SafeConfigParser
+from configparser import ConfigParser
 import logging
 import os
 import os.path
@@ -45,7 +45,7 @@ class ConfParse:
         for pathtoconfig in self.clioptions.configs:
             options = {}
             # read the configuration file
-            config = SafeConfigParser()
+            config = ConfigParser()
             if not config.read(os.path.expanduser(pathtoconfig)):
                 sys.exit("Could not read config file")
             ####################

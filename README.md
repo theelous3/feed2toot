@@ -41,7 +41,8 @@ If you like Feed2toot, you can tip to support the development on ko-fi - no sign
 
 ### Use Feed2toot
 
-* Create or modify feed2toot.ini file in order to configure feed2toot:
+* Create or modify feed2toot.ini file in order to configure feed2toot.
+There is an example in the repo:
 
         [mastodon]
         instance_url=https://mastodon.social
