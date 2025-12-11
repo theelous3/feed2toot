@@ -1,90 +1,113 @@
 #!/usr/bin/env python3
-# vim:ts=4:sw=4:ft=python:fileencoding=utf-8
-# Copyright © 2015-2021 Carl Chenet <carl.chenet@ohmytux.com>
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>
 
+import sys
 from argparse import ArgumentParser
-from getpass import getpass
-from os import getcwd
-from os import linesep
-from os import sep
+from os import getcwd, sep, makedirs
+from urllib.parse import urlparse
+
 from mastodon import Mastodon
 from mastodon.Mastodon import MastodonIllegalArgumentError
-import sys
 
-__version__ = '0.2'
+__version__ = "1.0"
 
-epilog = 'For more information: https://feed2toot.readthedocs.io'
-description = 'Create a Mastodon app for Feed2toot'
-parser = ArgumentParser(prog='register_feed2toot_app',
-                        description=description,
-                        epilog=epilog)
-parser.add_argument('--version', action='version', version=__version__)
-parser.add_argument('--client-credentials-file', dest='clientcredfile', help='the name of the client credentials for the Mastodon app', default='feed2toot_clientcred.txt')
-parser.add_argument('--user-credentials-file', dest='usercredfile', help='the name of the user credentials for the Mastodon app', default='feed2toot_usercred.txt')
-parser.add_argument('--name', help='the name of the Mastodon app', default='feed2toot')
+description = "Create a Mastodon app for Feed2toot (OAuth code flow)"
+
+parser = ArgumentParser(description=description)
+parser.add_argument(
+    "-n",
+    "--name",
+    dest="name",
+    default="feed2toot",
+    help="Application name (default: feed2toot)",
+)
+parser.add_argument(
+    "-c",
+    "--client",
+    dest="clientcredfile",
+    default="feed2toot_clientcred.secret",
+    help="Client credentials file (default: feed2toot_clientcred.secret)",
+)
+parser.add_argument(
+    "-u",
+    "--user",
+    dest="usercredfile",
+    default="feed2toot_usercred.secret",
+    help="User credentials file (default: feed2toot_usercred.secret)",
+)
+
 opts = parser.parse_args()
 
-clientcredfile=opts.clientcredfile
-usercredfile=opts.usercredfile
+clientcredfile = opts.clientcredfile
+usercredfile = opts.usercredfile
 
-headline = '{linesep}This script generates the Mastodon application credentials for Feed2toot.{linesep}{clientcredfile} and {usercredfile} will be written{linesep}in the current directory: {cwd}.{linesep}WARNING: previous files with the same names will be overwritten.{linesep}{linesep}A connection is also initiated to create the application.{linesep}Your password is *not* stored.{linesep}'.format(linesep=linesep, clientcredfile=clientcredfile, usercredfile=usercredfile, cwd=getcwd())
-print(headline)
+print(f"WARNING: RUN THIS FILE FROM YOUR feed2toot WORKING DIR'{opts.name}' for Feed2toot")
+print(f"Registering app '{opts.name}' for Feed2toot")
+print(f"Client credentials file: {clientcredfile}")
+print(f"User credentials file:   {usercredfile}\n")
+print("Checking/Creating ./creds directory")
 
+makedirs("creds", exist_ok=True)
 
-# get the instance
-instance = input('Mastodon instance URL (defaults to https://mastodon.social): ')
+instance = input("Instance URL (e.g. https://social.example.org): ").strip()
+
 if not instance:
-    instance = 'https://mastodon.social'
-elif not instance.startswith('http'):
-    instance = ''.join(['https://', instance])
+    sys.exit("No instance URL provided, aborting.")
 
-# get the username
-userok = False
-while not userok:
-    user = input('Mastodon login: ')
-    if not user:
-        print('Your Mastodon username can not be empty.')
-        userok = False
-    elif '@' not in user or '.' not in user:
-        print('Your Mastodon username should be an email.')
-        userok = False
-    else:
-        userok = True
+parsed = urlparse(instance)
+if not parsed.scheme or not parsed.netloc:
+    sys.exit("Invalid instance URL. Please include a scheme (e.g. https://example.org).")
 
-# get the password
-password = getpass(prompt='Mastodon password: ')
+instance = parsed.geturl().rstrip("/")
+
+# Step 1: Register the app (this works on GoToSocial)
+client_path = f"{getcwd()}{sep}creds{sep}{clientcredfile}"
+
+print("\nCreating application on instance...")
 Mastodon.create_app(
-      opts.name,
-      api_base_url=instance,
-      to_file = '{cwd}{sep}{clientcredfile}'.format(cwd=getcwd(), sep=sep, clientcredfile=clientcredfile)
+    opts.name,
+    api_base_url=instance,
+    scopes=["read", "write"],
+    redirect_uris="urn:ietf:wg:oauth:2.0:oob",
+    to_file=client_path,
 )
-mastodon = Mastodon(client_id = '{cwd}{sep}{clientcredfile}'.format(cwd=getcwd(), sep=sep, clientcredfile=clientcredfile),
-                    api_base_url=instance)
+print(f"App registered and client credentials written to {client_path}")
+
+
+mastodon = Mastodon(
+    client_id=client_path,
+    api_base_url=instance,
+    version_check_mode="none",
+)
+
+# Step 3: Get OAuth URL and have the user authorize
+print("\nGenerating OAuth authorization URL...")
+auth_url = mastodon.auth_request_url(
+    redirect_uris="urn:ietf:wg:oauth:2.0:oob",
+    scopes=["read", "write"],
+)
+print("Open this URL in a browser, log in, and authorize the app:\n")
+print(f"{auth_url}\n")
+oob_code = input("Paste the code shown by the instance here: ").strip()
+
+if not oob_code:
+    sys.exit("No code provided, aborting.")
+
+# Step 4: Exchange code for token and store user credentials
+user_path = f"{getcwd()}{sep}creds{sep}{usercredfile}"
+print("\nExchanging code for access token...")
+
 try:
     mastodon.log_in(
-        user,
-        password,
-        to_file = '{cwd}{sep}{usercredfile}'.format(cwd=getcwd(), sep=sep, usercredfile=usercredfile)
+        code=oob_code,
+        redirect_uri="urn:ietf:wg:oauth:2.0:oob",
+        scopes=["read", "write"],
+        to_file=user_path,
     )
 except MastodonIllegalArgumentError as err:
-    print(err)
-    sys.exit('{linesep}I guess you entered a bad login or password.{linesep}'.format(linesep=linesep))
+    print(f"Error during OAuth code exchange: {err}")
+    sys.exit("Authorization failed. Check instance URL, app scopes, and code.")
 
-summary = '{linesep}The app {appname} was added to your Preferences=>Accounts=>Authorized apps page.{linesep}The file {clientcredfile} and {usercredfile} were created in the current directory.{linesep}'.format(appname=opts.name,
-              linesep=linesep,
-              clientcredfile=clientcredfile,
-              usercredfile=usercredfile)
-print(summary)
-sys.exit(0)
+print(f"User credentials written to {user_path}\n")
+print("Done. Use these files in your feed2toot config:")
+print(f"  client_credentials_file: {clientcredfile}")
+print(f"  user_credentials_file:   {usercredfile}")
