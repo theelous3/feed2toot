@@ -1,4 +1,4 @@
-### Feed2toot
+### Feed2toot-oauth
 
 Feed2toot automatically parses rss feeds, identifies new posts and posts them on the [Mastodon](https://mastodon.social) social network.
 For the full documentation, [read it online](https://feed2toot.readthedocs.io/en/latest/).
@@ -6,6 +6,8 @@ For the full documentation, [read it online](https://feed2toot.readthedocs.io/en
 If you like Feed2toot, you can tip to support the development on ko-fi - no signup required:
 
 [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/F2F21OVNKF)
+
+
 
 ### Quick Install
 
@@ -73,3 +75,6 @@ past:
 * Carl Chenet <carl.chenet@ohmytux.com>
 * Antoine Beaupré <anarcat@debian.org>
 * First developed by Todd Eddy
+
+
+This is a big ass fork and refactor of this project, which is abandoned and very broken: https://gitlab.com/chaica/feed2toot
