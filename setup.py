@@ -14,18 +14,23 @@ CLASSIFIERS = [
 ]
 
 setup(
-    name="feed2toot",
-    version="0.17",
-    license="GNU GPL v3",
-    description="Parse rss feeds and send new posts to Mastodon",
-    long_description="Parse rss feeds and send new posts to the Mastodon social network",
-    author="Carl Chenet",
-    author_email="carl.chenet@ohmytux.com",
-    url="https://gitlab.com/chaica/feed2toot",
+    name="feed2toot-oauth",
+    version="1.0",
+    license="MIT",
+    description="Parse rss feeds and send new posts to Mastodon-likes",
+    long_description="Parse rss feeds and send new posts to the Mastodon-like social networks",
+    author="theelous3",
+    author_email="thee_grandmaster@hotmail.com",
+    url="https://github.com/theelous3/feed2toot-oauth",
     classifiers=CLASSIFIERS,
-    download_url="https://gitlab.com/chaica/feed2toot",
+    download_url="https://github.com/theelous3/feed2toot-oauth",
     packages=find_packages(),
-    scripts=["scripts/feed2toot", "scripts/register_feed2toot_app"],
+    entry_points={
+        "console_scripts": [
+            "feed2toot=feed2toot.cli:main",
+            "feed2toot-register-app=feed2toot.register_app:main",
+        ]
+    },
     install_requires=["beautifulsoup4", "feedparser", "Mastodon.py"],
     extras_require={"influxdb": ["influxdb"]},
 )

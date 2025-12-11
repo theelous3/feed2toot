@@ -9,7 +9,29 @@ import os
 import os.path
 import sys
 
-__version__ = "0.17"
+DIST_NAME = "feed2toot-oauth"
+
+try:  # Python 3.8+
+    from importlib import metadata as importlib_metadata
+except ImportError:  # pragma: no cover - fallback for older Pythons
+    importlib_metadata = None  # type: ignore
+
+
+def _package_version() -> str:
+    if importlib_metadata:
+        try:
+            return importlib_metadata.version(DIST_NAME)
+        except importlib_metadata.PackageNotFoundError:
+            pass
+    try:
+        import pkg_resources
+
+        return pkg_resources.get_distribution(DIST_NAME).version  # type: ignore
+    except Exception:
+        return "0.0.0"
+
+
+__version__ = _package_version()
 
 
 class CliParse:

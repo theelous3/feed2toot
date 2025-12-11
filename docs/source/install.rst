@@ -2,35 +2,20 @@ How to install Feed2toot
 ========================
 From PyPI
 ^^^^^^^^^
-    $ pip3 install feed2toot
+    $ python -m venv .venv
+    $ source .venv/bin/activate  # Windows: .venv\Scripts\activate
+    (.venv) $ pip install feed2toot-oauth
 
 From sources
 ^^^^^^^^^^^^
-* You need at least Python 3.4.
+* You need Python 3.7+ with ``pip`` available.
 
-* On some Linux Distribution **setuptools** package does not come with default python install, you need to install it.
+* Clone the repository and install in editable mode for development and improved configurability::
 
-* Install **PIP**::
+    $ git clone https://github.com/theelous3/feed2toot-oauth.git
+    $ cd feed2toot-oauth
+    $ python -m venv .venv
+    $ source .venv/bin/activate  # Windows: .venv\Scripts\activate
+    (.venv) $ pip install -e .
 
-    	$ wget https://bootstrap.pypa.io/get-pip.py -O - | sudo python3
-    
-    
-* Install **setuptools** module::    
-  
-    $ wget https://bootstrap.pypa.io/ez_setup.py -O - | sudo python3
-    
-Alternatively, Setuptools may be installed to a user-local path::
-	  
-	       $ wget https://bootstrap.pypa.io/ez_setup.py -O - | python3 - --user
-
-* Untar the tarball and go to the source directory with the following commands::
-
-    $ tar zxvf feed2toot-0.17.tar.gz
-    $ cd feed2toot
-
-* Next, to install Feed2toot on your computer, type the following command with the root user::
-
-    $ python3 setup.py install
-    $ # or
-    $ python3 setup.py install --install-scripts=/usr/bin
-
+  This exposes the CLI entry points ``feed2toot`` and ``feed2toot-register-app`` directly from your virtualenv.

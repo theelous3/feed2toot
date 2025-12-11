@@ -1,3 +1,6 @@
+# Your credential files:
+**/creds/
+
 docs/build/
 __pycache__
 feedlist

@@ -5,9 +5,9 @@
 
 ## [0.16] - 2020-12-09
 ### Added
-- scripts/register_feed2toot_app: --client-credentials-file option to change the filename in which the client credentials are stored
-- scripts/register_feed2toot_app: --user-credentials-file option to change the filename in which the client credentials are stored
-- scripts/register_feed2toot_app: --name to change the Mastodon app name
+- scripts/feed2toot-resigter-app: --client-credentials-file option to change the filename in which the client credentials are stored
+- scripts/feed2toot-resigter-app: --user-credentials-file option to change the filename in which the client credentials are stored
+- scripts/feed2toot-resigter-app: --name to change the Mastodon app name
 
 ## [0.15] - 2020-12-07
 ### Changed
@@ -68,7 +68,7 @@
 ### Changed
 - configuration parser was split into much smaller chunks
 - remove useless imports and coding style, contributed by Alexis Metaireau
-- rephrasing and reformatting of the script register_feed2toot_app, contributed by Bastien Guerry
+- rephrasing and reformatting of the script feed2toot-resigter-app, contributed by Bastien Guerry
 
 ## [0.5] - 2017-05-05
 ### Added
@@ -85,7 +85,7 @@
 
 ## [0.2] - 2017-04-11
 ### Changed
-- register_feed2toot_app now able to generate credentials for any instance
+- feed2toot-resigter-app now able to generate credentials for any instance
 - remove useless tweepy dependencies
 
 ## [0.1] - 2017-04-09

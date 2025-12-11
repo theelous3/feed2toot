@@ -1,18 +1,18 @@
 Use Feed2toot
 ==============
-After the configuration of Feed2toot, just launch the following command::
+After the configuration of Feed2toot, launch the following command from your virtual environment::
 
-    $ feed2toot -c /path/to/feed2toot.ini
+    (.venv) $ feed2toot -c /path/to/feed2toot.ini
 
 Run Feed2toot on a regular basis
----------------------------------
-Feed2toot should be launched on a regular basis in order to efficiently send your new RSS entries to Mastodon. It is quite easy to achieve by adding a line to your user crontab, as described below::
+--------------------------------
+Feed2toot should be launched on a regular basis in order to efficiently send your new RSS entries to Mastodon. Ensure your cron job uses the virtual environment’s binary (absolute path), for example::
 
-    @hourly feed2toot -c /path/to/feed2toot.ini
+    @hourly /home/johndoe/feed2toot-oauth/.venv/bin/feed2toot -c /path/to/feed2toot.ini
 
 will execute feed2toot every hour. Or without the syntactic sugar in the global crontab file /etc/crontab::
 
-    0 * * * * johndoe feed2toot -c /path/to/feed2toot.ini
+    0 * * * * johndoe /home/johndoe/feed2toot-oauth/.venv/bin/feed2toot -c /path/to/feed2toot.ini
 
 Test option
 -----------
@@ -22,13 +22,13 @@ In order to know what's going to be sent to Mastodon without actually doing it, 
 
 Debug option
 ------------
-In order to increase the verbosity of what's Feed2toot is doing, use the **--debug** option followed by the level of verbosity see [the the available different levels](https://docs.python.org/3/library/logging.html)::
+In order to increase the verbosity of what Feed2toot is doing, use the **--debug** option followed by the level of verbosity see `the available different levels <https://docs.python.org/3/library/logging.html>`_::
 
     $ feed2toot --debug -c /path/to/feed2toot.ini
 
 Populate the cache file without posting toots
 ---------------------------------------------
-Starting from 0.8, Feed2toot offers the **--populate-cache** command line option to populate the cache file without posting to Mastodon::
+Feed2toot offers the **--populate-cache** command line option to populate the cache file without posting to Mastodon::
 
     $ feed2toot --populate-cache -c feed2toot.ini
     populating RSS entry https://www.journalduhacker.net/s/65krkk
@@ -44,7 +44,7 @@ Starting from 0.8, Feed2toot offers the **--populate-cache** command line option
 
 How to display available sections of the rss feed
 -------------------------------------------------
-Starting from 0.8, Feed2toot offers the **--rss-sections** command line option to display the available section of the rss feed and exits::
+Feed2toot offers the **--rss-sections** command line option to display the available section of the rss feed and exit::
 
     $ feed2toot --rss-sections -c feed2toot.ini
     The following sections are available in this RSS feed: ['title', 'comments', 'authors', 'link', 'author', 'summary', 'links', 'tags', id', 'author_detail', 'published'].
@@ -63,35 +63,30 @@ If you want to limit the number of rss entries published at each execution, you 
 
 The number of posts to Mastodon will be at 5 posts top with this CLI option.
 
-Use register_feed2toot_app
+Use feed2toot-register-app
 ==========================
-You need a Mastodon app associated to a user on the Mastodon instance. The script register_feed2toot_app will create an app for Feed2toot and upload it on the specified Mastodon instance.
+You need a Mastodon app associated to a user on the Mastodon instance. The script ``feed2toot-register-app`` will create an app for Feed2toot and upload it on the specified Mastodon instance using the OAuth authorization code flow.
 
 Primary usage ::
 
-    $ register_feed2toot_app
+    $ feed2toot-register-app
 
 Possible CLI options:
 
-- use the **--client-credentials-file** option to change the filename in which the client credentials are stored (defaults to feed2toot_clientcred.txt)
-- use the **--user-credentials-file** option to change the filename in which the user credentials are stored (defaults to feed2toot_usercred.txt)
-- use the **--name** to change the Mastodon app name (defaults to feed2toot)
+- use **-c/--client** to change the filename in which the client credentials are stored (defaults to ``feed2toot_clientcred.secret``)
+- use **-u/--user** to change the filename in which the user credentials are stored (defaults to ``feed2toot_usercred.secret``)
+- use **-n/--name** to change the Mastodon app name (defaults to ``feed2toot``)
 
 Example with full options and full output::
 
-    $ ./register_feed2toot_app --user-credentials-file f2tusercreds.txt --client-credentials-file f2tclientcreds.txt --name f2t
-    
-    This script generates the Mastodon application credentials for Feed2toot.
-    f2tclientcreds.txt and f2tusercreds.txt will be written
-    in the current directory: /home/me/feed2toot/scripts.
-    WARNING: previous files with the same names will be overwritten.
-    
-    A connection is also initiated to create the application.
-    Your password is *not* stored.
-    
-    Mastodon instance URL (defaults to https://mastodon.social): https://framapiaf.org
-    Mastodon login: toto@titi.com
-    Mastodon password: 
+    $ feed2toot-register-app --user f2tusercreds.secret --client f2tclientcreds.secret --name f2t
 
-    The app f2t was added to your preferences=>authorized apps page.
-    The file f2tclientcreds.txt and f2tusercreds.txt were created in the current directory.
+    Creating application on instance...
+    App registered and client credentials written to /home/me/feed2toot/creds/f2tclientcreds.secret
+    Generating OAuth authorization URL...
+    Open this URL in a browser, log in, and authorize the app:
+    https://framapiaf.org/oauth/authorize?...
+    Paste the code shown by the instance here: ABCDEFG123456
+    User credentials written to /home/me/feed2toot/creds/f2tusercreds.secret
+
+The script writes files under ``./creds`` unless you provide another path in the filenames you pass to ``--client`` or ``--user``.

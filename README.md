@@ -3,33 +3,41 @@
 Feed2toot automatically parses rss feeds, identifies new posts and posts them on the [Mastodon](https://mastodon.social) social network.
 For the full documentation, [read it online](https://feed2toot.readthedocs.io/en/latest/).
 
-If you like Feed2toot, you can donate cryptocurrencies to support the development:
+If you like Feed2toot, you can tip to support the development on ko-fi - no signup required:
 
-- BTC: 1AW12Zw93rx4NzWn5evcG7RNNEM2RSLmAC
-- XMR: 82VFaMG55AnW1MDgsmKgwUShT2MaiSi7AUY9DQANf7BWK3HdQBKwz58EcxshAWZGkV2A3KPGN6vqRjjvQWsr4jf6Dhc2kEC
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/F2F21OVNKF)
 
 ### Quick Install
 
-* Install Feed2toot from PyPI
+* Install Feed2toot from PyPI (recommended for normal use)
 
-        # pip3 install feed2toot
+        $ python -m venv .venv
+        $ source .venv/bin/activate  # Windows: .venv\Scripts\activate
+        (.venv) $ pip install feed2toot-oauth
 
-* Install Feed2toot from sources
-  *(see the installation guide for full details)
-  [Installation Guide](http://feed2toot.readthedocs.io/en/latest/install.html)*
+* Install Feed2toot from sources for development or local edits
+  *(see the installation guide for full details
+  [Installation Guide](http://feed2toot.readthedocs.io/en/latest/install.html))*
 
+        $ git clone https://github.com/theelous3/feed2toot-oauth.git
+        $ cd feed2toot-oauth
+        $ python -m venv .venv
+        $ source .venv/bin/activate  # Windows: .venv\Scripts\activate
+        (.venv) $ pip install -e .
 
-        # tar zxvf feed2toot-0.17.tar.gz
-        # cd feed2toot
-        # python3 setup.py install
-        # # or
-        # python3 setup.py install --install-scripts=/usr/bin
+  Editable installs expose the same CLI commands as a normal install: `feed2toot` and `feed2toot-register-app`.
+
 
 ### Create the authorization for the Feed2toot app
 
-* Just launch the following command::
+* Run the packaged registration helper (OAuth code flow)::
 
-        $ register_feed2toot_app
+        $ feed2toot-register-app
+        Instance URL (e.g. https://social.example.org): https://example.social
+        Open this URL in a browser, log in, and authorize the app:
+        https://example.social/oauth/authorize?...
+        Paste the code shown by the instance here: ABCDEFG123456
+        User credentials written to ./creds/feed2toot_usercred.secret
 
 ### Use Feed2toot
 
@@ -37,8 +45,8 @@ If you like Feed2toot, you can donate cryptocurrencies to support the developmen
 
         [mastodon]
         instance_url=https://mastodon.social
-        user_credentials=feed2toot_usercred.txt
-        client_credentials=feed2toot_clientcred.txt
+        user_credentials=feed2toot_usercred.secret
+        client_credentials=feed2toot_clientcred.secret
         ; Default visibility is public, but you can override it:
         ; toot_visibility=unlisted
 
@@ -58,10 +66,10 @@ If you like Feed2toot, you can donate cryptocurrencies to support the developmen
 
 ### Authors
 
+* Mark Jameson/theelous3 <theelous3.net>
+
+past:
+
 * Carl Chenet <carl.chenet@ohmytux.com>
 * Antoine Beaupré <anarcat@debian.org>
 * First developed by Todd Eddy
-
-### License
-
-This software comes under the terms of the GPLv3+. Previously under MIT license. See the LICENSE file for the complete text of the license.
