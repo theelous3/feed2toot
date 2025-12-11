@@ -15,7 +15,7 @@ CLASSIFIERS = [
 
 setup(
     name="feed2toot-oauth",
-    version="1.0",
+    version="0.0.1",
     license="MIT",
     description="Parse rss feeds and send new posts to Mastodon-likes",
     long_description="Parse rss feeds and send new posts to the Mastodon-like social networks",
