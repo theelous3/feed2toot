@@ -65,6 +65,28 @@ There is an example in the repo:
 
         $ feed2toot -c /path/to/feed2toot.ini
 
+### CLI usage
+
+Common command line flags (see `feed2toot/cliparse.py` for full details):
+
+- `-c/--config FILE [FILE…]` paths to one or more `.ini` config files (supports globs and directories)
+- `-a/--all` post everything, ignoring the cache
+- `--ignore-ssl` skip SSL errors when fetching feeds
+- `-l/--limit N` consider only the newest N feed items (default 10)
+- `-t/--lock-timeout SECONDS` lockfile timeout (default 3600)
+- `--cachefile PATH` override cache file path
+- `--lockfile PATH` override lock file path
+- `-n/--dry-run` log what would be sent without posting
+- `-v/--verbose/--info` set log level to INFO; `-d/--debug` sets DEBUG
+- `--syslog [LEVEL]` also log to syslog; optional LEVEL (default INFO)
+- `--hashtaglist PATH` path to a hashtag list file
+- `-p/--populate-cache` fill cache without posting
+- `-r/--rss URL` override RSS URL from config
+- `--rss-sections` print available RSS fields and exit
+- `--version` print version and exit
+
+Tip: for first-time runs you may want a higher `--limit` to backfill the cache manually, then use a lower limit in your recurring cron job.
+
 ### Authors
 
 * Mark Jameson/theelous3 <theelous3.net>
